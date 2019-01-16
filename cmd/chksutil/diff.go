@@ -32,24 +32,27 @@ func (p *DiffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 		log.Fatal("Expects exactly 2 checkfile arguments")
 	}
 
-	f, err := os.Open(fs.Arg(0))
+	fn1 := fs.Arg(0)
+	fn2 := fs.Arg(1)
+
+	f, err := os.Open(fn1)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to read '%s' - %s", fn1, err)
 	}
 
 	chk1, err := checkstyle.Decode(f)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to parse '%s' - %s", fn1, err)
 	}
 
-	f2, err := os.Open(fs.Arg(1))
+	f2, err := os.Open(fn2)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to read '%s' - %s", fn2, err)
 	}
 
 	chk2, err := checkstyle.Decode(f2)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Failed to parse '%s' - %s", fn1, err)
 	}
 
 	fixedErr, newErr := checkstyle.Diff(chk1, chk2, checkstyle.DiffOptions{MaxLineDiff: 50})
