@@ -55,7 +55,7 @@ func (p *DiffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 		log.Fatalf("Failed to parse '%s' - %s", fn1, err)
 	}
 
-	fixedErr, newErr := checkstyle.Diff(chk1, chk2, checkstyle.DiffOptions{MaxLineDiff: 50})
+	fixedErr, newErr := checkstyle.Diff(chk1, chk2, checkstyle.DiffOptions{MaxLineDiff: p.maxLineShift})
 	for _, f := range fixedErr.File {
 		for _, e := range f.Error {
 			fmt.Printf("Fixed %s on %s:%d - %s\n", e.Severity, f.Name, e.Line, e.Message)
