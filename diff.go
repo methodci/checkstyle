@@ -25,27 +25,40 @@ func Diff(left, right *Checkstyle, opt DiffOptions) (*Checkstyle, *Checkstyle) {
 			continue
 		}
 
-		lf := left.File.FromName(n).Error
-		rf := right.File.FromName(n).Error
+		lf := left.File.FromName(n)
+		rf := right.File.FromName(n)
+
+		lfe := []CheckstyleFileError{}
+		if lf != nil {
+			lfe = lf.Error
+		}
+
+		rfe := []CheckstyleFileError{}
+		if rf != nil {
+			rfe = rf.Error
+		}
+
+		// lfe := lf.Error
+		// rfe := rf.Error
 
 		// running through zero first prevernts accidental lose equality where
 		// actual equality exists several lines below
-		lf, rf = fileErrorWoExactEq(lf, rf, 0)
+		lfe, rfe = fileErrorWoExactEq(lfe, rfe, 0)
 		if opt.MaxLineDiff > 0 {
-			lf, rf = fileErrorWoExactEq(lf, rf, opt.MaxLineDiff)
+			lfe, rfe = fileErrorWoExactEq(lfe, rfe, opt.MaxLineDiff)
 		}
 
-		if len(lf) > 0 {
+		if len(lfe) > 0 {
 			lout.File = append(lout.File, CheckstyleFile{
 				Name:  n,
-				Error: lf,
+				Error: lfe,
 			})
 		}
 
-		if len(rf) > 0 {
+		if len(rfe) > 0 {
 			rout.File = append(rout.File, CheckstyleFile{
 				Name:  n,
-				Error: rf,
+				Error: rfe,
 			})
 		}
 	}
