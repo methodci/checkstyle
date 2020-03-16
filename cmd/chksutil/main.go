@@ -14,6 +14,7 @@ func main() {
 	subcommands.Register(subcommands.CommandsCommand(), "")
 
 	subcommands.Register(&DiffCmd{}, "")
+	subcommands.Register(&ListCmd{}, "")
 
 	flag.Parse()
 	ctx := context.Background()
