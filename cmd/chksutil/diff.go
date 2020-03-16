@@ -19,8 +19,8 @@ func (*DiffCmd) Name() string     { return "diff" }
 func (*DiffCmd) Synopsis() string { return "diff two checkstyle files" }
 func (*DiffCmd) Usage() string {
 	return `diff <left-file> <right-file>:
-	list your notes.
-  `
+	diff two checkstyle files.
+`
 }
 
 func (p *DiffCmd) SetFlags(f *flag.FlagSet) {
