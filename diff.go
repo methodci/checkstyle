@@ -4,10 +4,13 @@ import (
 	"regexp"
 )
 
+// DiffOptions are the options for the Diff command
 type DiffOptions struct {
 	MaxLineDiff int
 }
 
+// Diff runs a diff operation on two checkstyle structs and returns two
+// new checkstyle structs of fixed and created errors
 func Diff(left, right *Checkstyle, opt DiffOptions) (*Checkstyle, *Checkstyle) {
 	lout := &Checkstyle{}
 	rout := &Checkstyle{}
@@ -42,14 +45,14 @@ func Diff(left, right *Checkstyle, opt DiffOptions) (*Checkstyle, *Checkstyle) {
 		}
 
 		if len(lfe) > 0 {
-			lout.File = append(lout.File, CheckstyleFile{
+			lout.File = append(lout.File, File{
 				Name:  n,
 				Error: lfe,
 			})
 		}
 
 		if len(rfe) > 0 {
-			rout.File = append(rout.File, CheckstyleFile{
+			rout.File = append(rout.File, File{
 				Name:  n,
 				Error: rfe,
 			})
@@ -67,9 +70,9 @@ const (
 	sideBoth
 )
 
-func fileErrorWoExactEq(left, right []CheckstyleFileError, maxLineDiff int) ([]CheckstyleFileError, []CheckstyleFileError) {
-	lout := []CheckstyleFileError{}
-	rout := []CheckstyleFileError{}
+func fileErrorWoExactEq(left, right []FileError, maxLineDiff int) ([]FileError, []FileError) {
+	lout := []FileError{}
+	rout := []FileError{}
 
 leftloop:
 	for _, l := range left {
@@ -96,7 +99,7 @@ rightloop:
 	return lout, rout
 }
 
-func fileErrorEq(lfile, rfile CheckstyleFileError, maxLineDiff int) bool {
+func fileErrorEq(lfile, rfile FileError, maxLineDiff int) bool {
 	if lfile.Severity != rfile.Severity || lfile.Source != rfile.Source || !msgEq(lfile.Message, rfile.Message) {
 		return false
 	}
@@ -118,7 +121,7 @@ func abs(x int) int {
 
 var msgClean = regexp.MustCompile(`[^\p{L}?:().]+`)
 
-// This is an initial attempt at this and should be reworked later to concider
+// This is an initial attempt at this and should be reworked later to consider
 // things like the line number difference in parts of this that perhaps include
 // line numbers
 func msgEq(left, right string) bool {

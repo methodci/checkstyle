@@ -7,9 +7,10 @@ import (
 	"golang.org/x/net/html/charset"
 )
 
-// Defined severity levels from http://checkstyle.sourceforge.net/property_types.html#severity
+// SeverityLevel as defined by severity levels from https://checkstyle.sourceforge.io/property_types.html#SeverityLevel
 type SeverityLevel string
 
+// SeverityLevels as defined by the checkstyle standard
 const (
 	SeverityIgnore  SeverityLevel = "ignore"
 	SeverityInfo    SeverityLevel = "info"
@@ -17,28 +18,34 @@ const (
 	SeverityError   SeverityLevel = "error"
 )
 
+// Checkstyle <checkstyle /> XML struct as defined by the checkstyle standard
 type Checkstyle struct {
-	XMLName xml.Name        `xml:"checkstyle"`
-	Version string          `xml:"version,attr"`
-	File    CheckstyleFiles `xml:"file"`
+	XMLName xml.Name `xml:"checkstyle"`
+	Version string   `xml:"version,attr"`
+	File    Files    `xml:"file"`
 }
 
-type CheckstyleFile struct {
-	Name  string                `xml:"name,attr"`
-	Error []CheckstyleFileError `xml:"error"`
+// File <file /> XML struct as defined by the checkstyle standard
+type File struct {
+	Name  string      `xml:"name,attr"`
+	Error []FileError `xml:"error"`
 }
 
-type CheckstyleFileError struct {
+// FileError <error /> XML struct as defined by the checkstyle standard
+type FileError struct {
 	Line     int           `xml:"line,attr"`
 	Severity SeverityLevel `xml:"severity,attr"`
 	Message  string        `xml:"message,attr"`
 	Source   string        `xml:"source,attr"`
 }
 
-type CheckstyleFiles []CheckstyleFile
+// Files is a collection of <file /> XML structs with added helpers
+type Files []File
 
-func (chk CheckstyleFiles) FromName(name string) CheckstyleFile {
-	var out CheckstyleFile
+// FromName finds a File matching the given filename. If multiple files match a
+// given name their errors will be merged
+func (chk Files) FromName(name string) File {
+	var out File
 	for _, c := range chk {
 		if c.Name == name {
 			out.Error = append(out.Error, c.Error...)
@@ -48,6 +55,7 @@ func (chk CheckstyleFiles) FromName(name string) CheckstyleFile {
 	return out
 }
 
+// Decode reads a checkstyle file from a reader
 func Decode(r io.Reader) (*Checkstyle, error) {
 	dec := xml.NewDecoder(r)
 	dec.CharsetReader = charset.NewReaderLabel
