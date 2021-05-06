@@ -37,14 +37,15 @@ type CheckstyleFileError struct {
 
 type CheckstyleFiles []CheckstyleFile
 
-func (chk CheckstyleFiles) FromName(name string) *CheckstyleFile {
+func (chk CheckstyleFiles) FromName(name string) CheckstyleFile {
+	var out CheckstyleFile
 	for _, c := range chk {
 		if c.Name == name {
-			return &c
+			out.Error = append(out.Error, c.Error...)
 		}
 	}
 
-	return nil
+	return out
 }
 
 func Decode(r io.Reader) (*Checkstyle, error) {

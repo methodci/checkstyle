@@ -16,27 +16,20 @@ func Diff(left, right *Checkstyle, opt DiffOptions) (*Checkstyle, *Checkstyle) {
 	for n, s := range names {
 
 		if s == sideLeft {
-			lout.File = append(lout.File, *left.File.FromName(n))
+			lout.File = append(lout.File, left.File.FromName(n))
 			continue
 		}
 
 		if s == sideRight {
-			rout.File = append(rout.File, *right.File.FromName(n))
+			rout.File = append(rout.File, right.File.FromName(n))
 			continue
 		}
 
 		lf := left.File.FromName(n)
 		rf := right.File.FromName(n)
 
-		lfe := []CheckstyleFileError{}
-		if lf != nil {
-			lfe = lf.Error
-		}
-
-		rfe := []CheckstyleFileError{}
-		if rf != nil {
-			rfe = rf.Error
-		}
+		lfe := lf.Error
+		rfe := rf.Error
 
 		// lfe := lf.Error
 		// rfe := rf.Error
