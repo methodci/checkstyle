@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/xml"
 	"flag"
 	"fmt"
 	"log"
@@ -11,8 +12,14 @@ import (
 	"github.com/methodci/checkstyle"
 )
 
+const (
+	chkFixed   = "fixed"
+	chkCreated = "created"
+)
+
 type DiffCmd struct {
 	maxLineShift int
+	checkstyle   string
 }
 
 func (*DiffCmd) Name() string     { return "diff" }
@@ -25,11 +32,18 @@ func (*DiffCmd) Usage() string {
 
 func (p *DiffCmd) SetFlags(f *flag.FlagSet) {
 	f.IntVar(&p.maxLineShift, "lines", 50, "allowed number of lines for a message can shift")
+	f.StringVar(&p.checkstyle, "output-checkstyle", "", "output as checkstyle - options: "+chkFixed+" "+chkCreated)
 }
 
 func (p *DiffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	if fs.NArg() != 2 {
-		log.Fatal("Expects exactly 2 checkfile arguments")
+		log.Println("Expects exactly 2 checkfile file arguments")
+		return subcommands.ExitUsageError
+	}
+
+	if p.checkstyle != "" && p.checkstyle != chkFixed && p.checkstyle != chkCreated {
+		log.Println("checkstyle option expects value in  " + chkFixed + " " + chkCreated)
+		return subcommands.ExitUsageError
 	}
 
 	fn1 := fs.Arg(0)
@@ -56,6 +70,22 @@ func (p *DiffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 	}
 
 	fixedErr, newErr := checkstyle.Diff(chk1, chk2, checkstyle.DiffOptions{MaxLineDiff: p.maxLineShift})
+
+	if p.checkstyle != "" {
+		enc := xml.NewEncoder(os.Stdout)
+		enc.Indent("", "\t")
+		switch p.checkstyle {
+		case chkFixed:
+			enc.Encode(fixedErr)
+		case chkCreated:
+			enc.Encode(newErr)
+		}
+
+		os.Stdout.WriteString("\n")
+
+		return subcommands.ExitSuccess
+	}
+
 	for _, f := range fixedErr.File {
 		for _, e := range f.Error {
 			fmt.Printf("Fixed %s on %s:%d - %s\n", e.Severity, f.Name, e.Line, e.Message)
