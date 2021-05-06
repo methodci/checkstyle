@@ -1,5 +1,6 @@
 # chksutil
 
+[![CI](https://github.com/methodci/checkstyle/actions/workflows/ci.yml/badge.svg)](https://github.com/methodci/checkstyle/actions/workflows/ci.yml)
 [![GoDoc](https://godoc.org/github.com/methodci/checkstyle?status.svg)](https://godoc.org/github.com/methodci/checkstyle)
 [![Go Report Card](https://goreportcard.com/badge/github.com/methodci/checkstyle)](https://goreportcard.com/report/github.com/methodci/checkstyle)
 
