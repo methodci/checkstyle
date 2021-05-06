@@ -48,6 +48,7 @@ func (chk Files) FromName(name string) File {
 	var out File
 	for _, c := range chk {
 		if c.Name == name {
+			out.Name = name
 			out.Error = append(out.Error, c.Error...)
 		}
 	}
