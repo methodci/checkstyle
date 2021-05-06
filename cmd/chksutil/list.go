@@ -29,19 +29,22 @@ func (p *ListCmd) SetFlags(f *flag.FlagSet) {
 
 func (p *ListCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	if fs.NArg() < 1 {
-		log.Fatal("Expects 1 or more checkfile arguments")
+		log.Println("Expects 1 or more checkfile arguments")
+		return subcommands.ExitUsageError
 	}
 
 	for _, fn := range fs.Args() {
 		f, err := os.Open(fn)
 		if err != nil {
-			log.Fatalf("Failed to read '%s' - %s", fn, err)
+			log.Printf("Failed to read '%s' - %s", fn, err)
+			return subcommands.ExitFailure
 		}
 		defer f.Close()
 
 		chk, err := checkstyle.Decode(f)
 		if err != nil {
-			log.Fatalf("Failed to parse '%s' - %s", fn, err)
+			log.Printf("Failed to parse '%s' - %s", fn, err)
+			return subcommands.ExitFailure
 		}
 
 		for _, f := range chk.File {

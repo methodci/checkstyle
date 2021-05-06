@@ -51,22 +51,26 @@ func (p *DiffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 
 	f, err := os.Open(fn1)
 	if err != nil {
-		log.Fatalf("Failed to read '%s' - %s", fn1, err)
+		log.Printf("Failed to read '%s' - %s", fn1, err)
+		return subcommands.ExitFailure
 	}
 
 	chk1, err := checkstyle.Decode(f)
 	if err != nil {
-		log.Fatalf("Failed to parse '%s' - %s", fn1, err)
+		log.Printf("Failed to parse '%s' - %s", fn1, err)
+		return subcommands.ExitFailure
 	}
 
 	f2, err := os.Open(fn2)
 	if err != nil {
-		log.Fatalf("Failed to read '%s' - %s", fn2, err)
+		log.Printf("Failed to read '%s' - %s", fn2, err)
+		return subcommands.ExitFailure
 	}
 
 	chk2, err := checkstyle.Decode(f2)
 	if err != nil {
-		log.Fatalf("Failed to parse '%s' - %s", fn1, err)
+		log.Printf("Failed to parse '%s' - %s", fn1, err)
+		return subcommands.ExitFailure
 	}
 
 	fixedErr, newErr := checkstyle.Diff(chk1, chk2, checkstyle.DiffOptions{MaxLineDiff: p.maxLineShift})
