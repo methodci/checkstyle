@@ -6,7 +6,7 @@
 
 `checkstyle` is a library for working with checkstyle files.
 
-The included chksutil is a utility for inspecting and diffing checkstyle files.
+The included `chksutil` is a utility for inspecting and diffing checkstyle files.
 
 ```console
 $ chksutil diff old.chk new.chk
