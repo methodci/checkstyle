@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/google/subcommands"
 	"github.com/methodci/checkstyle"
 )
@@ -49,10 +50,24 @@ func (p *ListCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 
 		for _, f := range chk.File {
 			for _, e := range f.Error {
-				fmt.Printf("%s on %s:%d - %s\n", e.Severity, f.Name, e.Line, e.Message)
+				fsev := formatSeverity(e.Severity)
+				fmt.Printf("%s on %s:%d - %s\n", fsev("%s", e.Severity), f.Name, e.Line, e.Message)
 			}
 		}
 	}
 
 	return subcommands.ExitSuccess
+}
+
+func formatSeverity(s checkstyle.SeverityLevel) func(string, ...interface{}) string {
+	switch s {
+	case checkstyle.SeverityError:
+		return color.RedString
+	case checkstyle.SeverityWarning:
+		return color.YellowString
+	case checkstyle.SeverityInfo:
+		return color.CyanString
+	}
+
+	return fmt.Sprintf
 }
