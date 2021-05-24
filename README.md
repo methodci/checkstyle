@@ -4,8 +4,9 @@
 [![GoDoc](https://godoc.org/github.com/methodci/checkstyle?status.svg)](https://godoc.org/github.com/methodci/checkstyle)
 [![Go Report Card](https://goreportcard.com/badge/github.com/methodci/checkstyle)](https://goreportcard.com/report/github.com/methodci/checkstyle)
 
+`checkstyle` is a library for working with checkstyle files.
 
-chksutil is a utility for inspecting and diffing checkstyle files
+The included chksutil is a utility for inspecting and diffing checkstyle files.
 
 ```console
 $ chksutil diff old.chk new.chk
@@ -14,7 +15,7 @@ Fixed info on GoalSetting.php:44 - RedundantConditionGivenDocblockType: Found a 
 Created info on GoalSetting.php:72 - MissingParamType: Parameter $value has no provided 
 ```
 
-## Install
+## Install chksutil
 
 binaries are attached to the releases
 
