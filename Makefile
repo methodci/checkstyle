@@ -17,7 +17,7 @@ test:
 .PHONY: clean
 clean:
 	-rm -f chksutil
-	-rm -rf release
+	-rm -rf release dist
 	go clean -i ./cmd/chksutil
 
 .PHONY: install
@@ -50,8 +50,8 @@ release/windows_amd64:
 
 .PHONY: release
 release: clean build
-	mkdir release/dist
-	zip -j 'release/dist/chksutil.darwin_universal.$(HEAD)$(DIRTY).zip'  release/darwin_universal/chksutil
-	zip -j 'release/dist/chksutil.linux_amd64.$(HEAD)$(DIRTY).zip'       release/linux_amd64/chksutil
-	zip -j 'release/dist/chksutil.windows_386.$(HEAD)$(DIRTY).exe.zip'   release/windows_386/chksutil.exe
-	zip -j 'release/dist/chksutil.windows_amd64.$(HEAD)$(DIRTY).exe.zip' release/windows_amd64/chksutil.exe
+	mkdir dist
+	zip -j 'dist/chksutil.darwin_universal.$(HEAD)$(DIRTY).zip'  release/darwin_universal/chksutil
+	zip -j 'dist/chksutil.linux_amd64.$(HEAD)$(DIRTY).zip'       release/linux_amd64/chksutil
+	zip -j 'dist/chksutil.windows_386.$(HEAD)$(DIRTY).exe.zip'   release/windows_386/chksutil.exe
+	zip -j 'dist/chksutil.windows_amd64.$(HEAD)$(DIRTY).exe.zip' release/windows_amd64/chksutil.exe
