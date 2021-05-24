@@ -8,34 +8,50 @@ LDFLAGS="-X main.buildStamp=$(STAMP) -X main.buildUser=$(USER) -X main.buildHash
 all: install
 
 .PHONY: build
-build: release/darwin64 release/linux64 release/windows64
+build: release/darwin_universal release/linux_amd64 release/windows_386 release/windows_amd64
 
+.PHONY: test
 test:
 	go test './...'
 
+.PHONY: clean
 clean:
 	-rm -f chksutil
 	-rm -rf release
 	go clean -i ./cmd/chksutil
 
+.PHONY: install
 install:
 	go install -ldflags $(LDFLAGS) ./cmd/chksutil
 
-release/darwin64:
+release/darwin_amd64:
 	env GOOS=darwin GOARCH=amd64 go clean -i  ./cmd/chksutil
-	env GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o release/darwin64/chksutil ./cmd/chksutil
+	env GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o release/darwin_amd64/chksutil ./cmd/chksutil
 
-release/linux64:
+release/darwin_arm64:
+	env GOOS=darwin GOARCH=arm64 go clean -i  ./cmd/chksutil
+	env GOOS=darwin GOARCH=arm64 go build -ldflags $(LDFLAGS) -o release/darwin_arm64/chksutil ./cmd/chksutil
+
+release/darwin_universal: release/darwin_amd64 release/darwin_arm64
+	mkdir release/darwin_universal
+	lipo -create -output release/darwin_universal/chksutil release/darwin_amd64/chksutil release/darwin_arm64/chksutil
+
+release/linux_amd64:
 	env GOOS=linux GOARCH=amd64 go clean -i
-	env GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o release/linux64/chksutil ./cmd/chksutil
+	env GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o release/linux_amd64/chksutil ./cmd/chksutil
 
-release/windows64:
+release/windows_386:
+	env GOOS=windows GOARCH=386 go clean -i
+	env GOOS=windows GOARCH=386 go build -ldflags $(LDFLAGS) -o release/windows_386/chksutil.exe ./cmd/chksutil
+
+release/windows_amd64:
 	env GOOS=windows GOARCH=amd64 go clean -i
-	env GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -o release/windows64/chksutil.exe ./cmd/chksutil
+	env GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -o release/windows_amd64/chksutil.exe ./cmd/chksutil
 
 .PHONY: release
 release: clean build
 	mkdir release/dist
-	zip -j 'release/dist/chksutil.darwin_amd64.$(HEAD)$(DIRTY).zip'      release/darwin64/chksutil
-	zip -j 'release/dist/chksutil.linux_amd64.$(HEAD)$(DIRTY).zip'       release/linux64/chksutil
-	zip -j 'release/dist/chksutil.windows_amd64.$(HEAD)$(DIRTY).exe.zip' release/windows64/chksutil.exe
+	zip -j 'release/dist/chksutil.darwin_universal.$(HEAD)$(DIRTY).zip'  release/darwin_universal/chksutil
+	zip -j 'release/dist/chksutil.linux_amd64.$(HEAD)$(DIRTY).zip'       release/linux_amd64/chksutil
+	zip -j 'release/dist/chksutil.windows_386.$(HEAD)$(DIRTY).exe.zip'   release/windows_386/chksutil.exe
+	zip -j 'release/dist/chksutil.windows_amd64.$(HEAD)$(DIRTY).exe.zip' release/windows_amd64/chksutil.exe
