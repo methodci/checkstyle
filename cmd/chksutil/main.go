@@ -5,8 +5,13 @@ import (
 	"flag"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/google/subcommands"
 )
+
+func init() {
+	flag.BoolVar(&color.NoColor, "no-color", false, "Disable colorized output")
+}
 
 func main() {
 	subcommands.Register(subcommands.HelpCommand(), "")
