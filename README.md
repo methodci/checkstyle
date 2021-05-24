@@ -1,4 +1,4 @@
-# chksutil
+# checkstyle / chksutil
 
 [![CI](https://github.com/methodci/checkstyle/actions/workflows/ci.yml/badge.svg)](https://github.com/methodci/checkstyle/actions/workflows/ci.yml)
 [![GoDoc](https://godoc.org/github.com/methodci/checkstyle?status.svg)](https://godoc.org/github.com/methodci/checkstyle)
