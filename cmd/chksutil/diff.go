@@ -18,25 +18,25 @@ const (
 	chkCreated = "created"
 )
 
-type DiffCmd struct {
+type diffCmd struct {
 	maxLineShift int
 	checkstyle   string
 }
 
-func (*DiffCmd) Name() string     { return "diff" }
-func (*DiffCmd) Synopsis() string { return "diff two checkstyle files" }
-func (*DiffCmd) Usage() string {
+func (*diffCmd) Name() string     { return "diff" }
+func (*diffCmd) Synopsis() string { return "diff two checkstyle files" }
+func (*diffCmd) Usage() string {
 	return `diff <left-file> <right-file>:
 	diff two checkstyle files.
 `
 }
 
-func (p *DiffCmd) SetFlags(f *flag.FlagSet) {
+func (p *diffCmd) SetFlags(f *flag.FlagSet) {
 	f.IntVar(&p.maxLineShift, "lines", 50, "allowed number of lines for a message can shift")
 	f.StringVar(&p.checkstyle, "output-checkstyle", "", "output as checkstyle - options: "+chkFixed+" "+chkCreated)
 }
 
-func (p *DiffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (p *diffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	if fs.NArg() != 2 {
 		log.Println("Expects exactly 2 checkfile file arguments")
 		return subcommands.ExitUsageError

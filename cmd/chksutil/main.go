@@ -18,8 +18,8 @@ func main() {
 	subcommands.Register(subcommands.FlagsCommand(), "")
 	subcommands.Register(subcommands.CommandsCommand(), "")
 
-	subcommands.Register(&DiffCmd{}, "")
-	subcommands.Register(&ListCmd{}, "")
+	subcommands.Register(&diffCmd{}, "")
+	subcommands.Register(&listCmd{}, "")
 
 	flag.Parse()
 	ctx := context.Background()

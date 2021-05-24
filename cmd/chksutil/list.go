@@ -12,23 +12,23 @@ import (
 	"github.com/methodci/checkstyle"
 )
 
-type ListCmd struct {
+type listCmd struct {
 	maxLineShift int
 }
 
-func (*ListCmd) Name() string     { return "list" }
-func (*ListCmd) Synopsis() string { return "list contents of one or more checkstyle files" }
-func (*ListCmd) Usage() string {
+func (*listCmd) Name() string     { return "list" }
+func (*listCmd) Synopsis() string { return "list contents of one or more checkstyle files" }
+func (*listCmd) Usage() string {
 	return `list <left-file> <right-file>:
 	list contents of one or more checkstyle files.
 `
 }
 
-func (p *ListCmd) SetFlags(f *flag.FlagSet) {
+func (p *listCmd) SetFlags(f *flag.FlagSet) {
 	// f.IntVar(&p.maxLineShift, "lines", 50, "allowed number of lines for a message can shift")
 }
 
-func (p *ListCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
+func (p *listCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
 	if fs.NArg() < 1 {
 		log.Println("Expects 1 or more checkfile arguments")
 		return subcommands.ExitUsageError
