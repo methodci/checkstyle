@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/google/subcommands"
@@ -13,7 +14,7 @@ import (
 )
 
 type listCmd struct {
-	maxLineShift int
+	levelFilter string
 }
 
 func (*listCmd) Name() string     { return "list" }
@@ -25,7 +26,7 @@ func (*listCmd) Usage() string {
 }
 
 func (p *listCmd) SetFlags(f *flag.FlagSet) {
-	// f.IntVar(&p.maxLineShift, "lines", 50, "allowed number of lines for a message can shift")
+	f.StringVar(&p.levelFilter, "severity", "", "comma separated list of severity levels to list - displays all on empty")
 }
 
 func (p *listCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -33,6 +34,8 @@ func (p *listCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 		log.Println("Expects 1 or more checkfile arguments")
 		return subcommands.ExitUsageError
 	}
+
+	levels := strings.Split(p.levelFilter, ",")
 
 	for _, fn := range fs.Args() {
 		f, err := os.Open(fn)
@@ -50,8 +53,10 @@ func (p *listCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 
 		for _, f := range chk.File {
 			for _, e := range f.Error {
-				fsev := formatSeverity(e.Severity)
-				fmt.Printf("%s on %s:%d - %s\n", fsev("%s", e.Severity), f.Name, e.Line, e.Message)
+				if (len(levels) == 1 && levels[0] == "") || contains(levels, string(e.Severity)) {
+					fsev := formatSeverity(e.Severity)
+					fmt.Printf("%s on %s:%d - %s\n", fsev("%s", e.Severity), f.Name, e.Line, e.Message)
+				}
 			}
 		}
 	}
@@ -70,4 +75,13 @@ func formatSeverity(s checkstyle.SeverityLevel) func(string, ...interface{}) str
 	}
 
 	return fmt.Sprintf
+}
+
+func contains[T comparable](s []T, e T) bool {
+	for _, v := range s {
+		if v == e {
+			return true
+		}
+	}
+	return false
 }
