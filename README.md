@@ -24,5 +24,5 @@ https://github.com/methodci/checkstyle/releases
 otherwise you can install from source via
 
 ```console
-$ go install github.com/methodci/checkstyle/cmd/chksutil
+$ go install github.com/methodci/checkstyle/cmd/chksutil@latest
 ```
