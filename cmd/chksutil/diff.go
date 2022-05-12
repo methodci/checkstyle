@@ -70,7 +70,7 @@ func (p *diffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 
 	chk2, err := checkstyle.Decode(f2)
 	if err != nil {
-		log.Printf("Failed to parse '%s' - %s", fn1, err)
+		log.Printf("Failed to parse '%s' - %s", fn2, err)
 		return subcommands.ExitFailure
 	}
 
