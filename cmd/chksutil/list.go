@@ -20,7 +20,7 @@ type listCmd struct {
 func (*listCmd) Name() string     { return "list" }
 func (*listCmd) Synopsis() string { return "list contents of one or more checkstyle files" }
 func (*listCmd) Usage() string {
-	return `list <left-file> <right-file>:
+	return `list [<file>...]:
 	list contents of one or more checkstyle files.
 `
 }
