@@ -9,10 +9,6 @@ import (
 	"github.com/google/subcommands"
 )
 
-func init() {
-	flag.BoolVar(&color.NoColor, "no-color", false, "Disable colorized output")
-}
-
 func main() {
 	subcommands.Register(subcommands.HelpCommand(), "")
 	subcommands.Register(subcommands.FlagsCommand(), "")
@@ -21,7 +17,12 @@ func main() {
 	subcommands.Register(&diffCmd{}, "")
 	subcommands.Register(&listCmd{}, "")
 
+	nocolor := flag.Bool("no-color", false, "Disable colorized output")
 	flag.Parse()
+	if *nocolor {
+		color.NoColor = true
+	}
+
 	ctx := context.Background()
 	os.Exit(int(subcommands.Execute(ctx)))
 }
