@@ -16,6 +16,7 @@ func main() {
 
 	subcommands.Register(&diffCmd{}, "")
 	subcommands.Register(&listCmd{}, "")
+	subcommands.Register(&statsCmd{}, "")
 
 	nocolor := flag.Bool("no-color", false, "Disable colorized output")
 	flag.Parse()
