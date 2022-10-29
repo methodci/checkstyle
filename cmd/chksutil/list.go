@@ -14,7 +14,8 @@ import (
 )
 
 type listCmd struct {
-	levelFilter string
+	levelFilter  []string
+	sourceFilter []string
 }
 
 func (*listCmd) Name() string     { return "list" }
@@ -26,7 +27,16 @@ func (*listCmd) Usage() string {
 }
 
 func (p *listCmd) SetFlags(f *flag.FlagSet) {
-	f.StringVar(&p.levelFilter, "severity", "", "comma separated list of severity levels to list - displays all on empty")
+	nempty := func(s string) bool { return s != "" }
+	f.Func("severity", "comma separated list of severity levels to list - displays all on empty", func(s string) error {
+		p.levelFilter = filter(strings.Split(s, ","), nempty)
+		return nil
+	})
+
+	f.Func("source", "comma separated list of source filters to list - displays all on empty", func(s string) error {
+		p.sourceFilter = filter(strings.Split(s, ","), nempty)
+		return nil
+	})
 }
 
 func (p *listCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{}) subcommands.ExitStatus {
@@ -34,8 +44,6 @@ func (p *listCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 		log.Println("Expects 1 or more checkfile arguments")
 		return subcommands.ExitUsageError
 	}
-
-	levels := strings.Split(p.levelFilter, ",")
 
 	for _, fn := range fs.Args() {
 		f, err := os.Open(fn)
@@ -53,7 +61,7 @@ func (p *listCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 
 		for _, f := range chk.File {
 			for _, e := range f.Error {
-				if (len(levels) == 1 && levels[0] == "") || contains(levels, string(e.Severity)) {
+				if (len(p.levelFilter) == 0 || contains(p.levelFilter, string(e.Severity))) && (len(p.sourceFilter) == 0 || contains(p.sourceFilter, e.Source)) {
 					fsev := formatSeverity(e.Severity)
 					fmt.Printf("%s on %s:%d - %s\n", fsev("%s", e.Severity), f.Name, e.Line, e.Message)
 				}
@@ -84,4 +92,14 @@ func contains[T comparable](s []T, e T) bool {
 		}
 	}
 	return false
+}
+
+func filter[T any](slice []T, f func(T) bool) []T {
+	var n []T
+	for _, e := range slice {
+		if f(e) {
+			n = append(n, e)
+		}
+	}
+	return n
 }
