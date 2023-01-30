@@ -3,7 +3,7 @@ module github.com/methodci/checkstyle
 go 1.18
 
 require (
-	github.com/fatih/color v1.14.0
+	github.com/fatih/color v1.14.1
 	github.com/google/subcommands v1.2.0
 	golang.org/x/net v0.0.0-20220615171555-694bf12d69de
 )
