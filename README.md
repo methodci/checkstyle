@@ -9,7 +9,7 @@
 The included `chksutil` is a utility for inspecting and diffing checkstyle files.
 
 ```console
-$ chksutil diff old.chk new.chk
+$ chksutil diff old.xml new.xml
 Fixed info on GoalSetting.php:44 - DocblockTypeContradiction: Cannot resolve types for $value - docblock-defined type int does not contain null
 Fixed info on GoalSetting.php:44 - RedundantConditionGivenDocblockType: Found a redundant condition when evaluating docblock-defined type $value and trying to reconcile type 'int' to !null
 Created info on GoalSetting.php:72 - MissingParamType: Parameter $value has no provided 
