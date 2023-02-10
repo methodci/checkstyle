@@ -18,6 +18,11 @@ func main() {
 	subcommands.Register(&listCmd{}, "")
 	subcommands.Register(&statsCmd{}, "")
 
+	fc := os.Getenv("FORCE_COLOR")
+	if fc != "" && fc != "0" {
+		color.NoColor = false
+	}
+
 	nocolor := flag.Bool("no-color", false, "Disable colorized output")
 	flag.Parse()
 	if *nocolor {
