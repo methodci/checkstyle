@@ -63,7 +63,7 @@ func (p *listCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 			for _, e := range f.Error {
 				if (len(p.levelFilter) == 0 || contains(p.levelFilter, string(e.Severity))) && (len(p.sourceFilter) == 0 || contains(p.sourceFilter, e.Source)) {
 					fsev := formatSeverity(e.Severity)
-					fmt.Printf("%s on %s:%d - %s\n", fsev("%s", e.Severity), f.Name, e.Line, e.Message)
+					fmt.Printf("%s %s on %s:%d - %s\n", fsev("%s", e.Severity), color.MagentaString(e.Source), f.Name, e.Line, e.Message)
 				}
 			}
 		}

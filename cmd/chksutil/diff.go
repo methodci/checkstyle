@@ -93,14 +93,14 @@ func (p *diffCmd) Execute(_ context.Context, fs *flag.FlagSet, _ ...interface{})
 
 	for _, f := range fixedErr.File {
 		for _, e := range f.Error {
-			fmt.Printf("%s on %s:%d - %s\n", color.GreenString("%s %s", "Fixed", e.Severity), f.Name, e.Line, e.Message)
+			fmt.Printf("%s %s on %s:%d - %s\n", color.GreenString("%s %s", "Fixed", e.Severity), color.MagentaString(e.Source), f.Name, e.Line, e.Message)
 		}
 	}
 
 	for _, f := range newErr.File {
 		for _, e := range f.Error {
 			fsev := formatSeverity(e.Severity)
-			fmt.Printf("%s on %s:%d - %s\n", fsev("%s %s", "Created", e.Severity), f.Name, e.Line, e.Message)
+			fmt.Printf("%s %s on %s:%d - %s\n", fsev("%s %s", "Created", e.Severity), color.MagentaString(e.Source), f.Name, e.Line, e.Message)
 		}
 	}
 
